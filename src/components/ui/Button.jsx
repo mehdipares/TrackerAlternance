@@ -4,6 +4,8 @@ const VARIANTS = {
   primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/20',
   secondary: 'bg-white text-stone-700 ring-1 ring-stone-200 hover:bg-stone-50',
   ghost: 'text-stone-600 hover:bg-stone-100',
+  danger: 'bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20',
+  'danger-ghost': 'text-rose-600 hover:bg-rose-50',
 }
 
 export default function Button({

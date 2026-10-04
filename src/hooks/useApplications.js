@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { createApplication, fetchApplications, updateApplication } from '../api/applications'
+import {
+  createApplication,
+  deleteApplication,
+  fetchApplications,
+  updateApplication,
+} from '../api/applications'
 
 // Gère l'état des candidatures : la liste, le chargement et l'erreur, ainsi que les actions.
 // Les pages n'ont plus qu'à afficher ce que le hook leur donne.
@@ -42,5 +47,18 @@ export function useApplications() {
     )
   }
 
-  return { applications, loading, error, reload: load, addApplication, editApplication }
+  async function removeApplication(id) {
+    await deleteApplication(id)
+    setApplications((current) => current.filter((application) => application.id !== id))
+  }
+
+  return {
+    applications,
+    loading,
+    error,
+    reload: load,
+    addApplication,
+    editApplication,
+    removeApplication,
+  }
 }

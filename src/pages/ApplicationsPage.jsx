@@ -9,7 +9,8 @@ import Modal from '../components/ui/Modal'
 import { useApplications } from '../hooks/useApplications'
 
 export default function ApplicationsPage() {
-  const { applications, loading, error, reload, addApplication, editApplication } = useApplications()
+  const { applications, loading, error, reload, addApplication, editApplication, removeApplication } =
+    useApplications()
 
   // null = fenêtre fermée ; 'new' = ajout ; un objet candidature = modification de celle-ci.
   const [editing, setEditing] = useState(null)
@@ -22,6 +23,11 @@ export default function ApplicationsPage() {
       await editApplication(editing.id, values)
     }
     setEditing(null) // n'est atteint que si l'enregistrement a réussi
+  }
+
+  async function handleDelete() {
+    await removeApplication(editing.id)
+    setEditing(null)
   }
 
   return (
@@ -64,6 +70,7 @@ export default function ApplicationsPage() {
         <ApplicationForm
           application={isNew ? null : editing}
           onSubmit={handleSubmit}
+          onDelete={handleDelete}
           onCancel={() => setEditing(null)}
         />
       </Modal>

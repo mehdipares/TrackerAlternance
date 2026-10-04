@@ -9,11 +9,14 @@ import Select from '../ui/Select'
 import Textarea from '../ui/Textarea'
 
 // Formulaire partagé entre l'ajout (application = null) et la modification.
-// Il ne connaît pas Supabase : il appelle onSubmit(données) et laisse le parent enregistrer.
-export default function ApplicationForm({ application, onSubmit, onCancel }) {
+// Il ne connaît pas Supabase : il appelle onSubmit(données) / onDelete() et laisse le parent agir.
+export default function ApplicationForm({ application, onSubmit, onDelete, onCancel }) {
   const [values, setValues] = useState(() => toFormValues(application))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  // Suppression en deux temps : un premier clic demande confirmation.
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   // Un seul gestionnaire pour tous les champs, grâce à l'attribut name.
   function handleChange(event) {
@@ -39,6 +42,18 @@ export default function ApplicationForm({ application, onSubmit, onCancel }) {
       setSaving(false)
     }
     // En cas de succès, le parent ferme la fenêtre : pas besoin de remettre saving à false.
+  }
+
+  async function handleDelete() {
+    setDeleting(true)
+    setError(null)
+    try {
+      await onDelete()
+    } catch {
+      setError('La suppression a échoué. Vérifiez votre connexion et réessayez.')
+      setDeleting(false)
+      setConfirmingDelete(false)
+    }
   }
 
   return (
@@ -104,14 +119,42 @@ export default function ApplicationForm({ application, onSubmit, onCancel }) {
         onChange={handleChange}
       />
 
-      <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
-        <Button type="button" variant="secondary" onClick={onCancel}>
-          Annuler
-        </Button>
-        <Button type="submit" loading={saving}>
-          {application ? 'Enregistrer' : 'Ajouter la candidature'}
-        </Button>
-      </div>
+      {confirmingDelete ? (
+        <div className="rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200" role="alert">
+          <p className="text-sm font-semibold text-rose-800">
+            Supprimer définitivement la candidature chez {application.company} ?
+          </p>
+          <p className="mt-0.5 text-sm text-rose-700">Cette action est irréversible.</p>
+          <div className="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button type="button" variant="secondary" onClick={() => setConfirmingDelete(false)}>
+              Non, garder
+            </Button>
+            <Button type="button" variant="danger" loading={deleting} onClick={handleDelete}>
+              Oui, supprimer
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:items-center">
+          {/* Le bouton Supprimer n'existe qu'en modification */}
+          {application && (
+            <Button
+              type="button"
+              variant="danger-ghost"
+              className="sm:mr-auto"
+              onClick={() => setConfirmingDelete(true)}
+            >
+              Supprimer
+            </Button>
+          )}
+          <Button type="button" variant="secondary" className="sm:ml-auto" onClick={onCancel}>
+            Annuler
+          </Button>
+          <Button type="submit" loading={saving}>
+            {application ? 'Enregistrer' : 'Ajouter la candidature'}
+          </Button>
+        </div>
+      )}
     </form>
   )
 }
