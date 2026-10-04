@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchApplications } from '../api/applications'
+import { createApplication, fetchApplications, updateApplication } from '../api/applications'
 
-// Gère l'état des candidatures : la liste, le chargement et l'erreur.
+// Gère l'état des candidatures : la liste, le chargement et l'erreur, ainsi que les actions.
 // Les pages n'ont plus qu'à afficher ce que le hook leur donne.
 export function useApplications() {
   const [applications, setApplications] = useState([])
@@ -27,5 +27,20 @@ export function useApplications() {
     load()
   }, [load])
 
-  return { applications, loading, error, reload: load }
+  // Les actions attendent la réponse de la base, puis mettent à jour la liste locale
+  // avec la ligne renvoyée : pas besoin de tout recharger.
+  // En cas d'erreur, elles la laissent remonter au formulaire qui l'affiche.
+  async function addApplication(values) {
+    const created = await createApplication(values)
+    setApplications((current) => [created, ...current])
+  }
+
+  async function editApplication(id, values) {
+    const updated = await updateApplication(id, values)
+    setApplications((current) =>
+      current.map((application) => (application.id === id ? updated : application)),
+    )
+  }
+
+  return { applications, loading, error, reload: load, addApplication, editApplication }
 }

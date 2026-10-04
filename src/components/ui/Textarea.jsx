@@ -1,12 +1,12 @@
 import { FIELD_CLASS, LABEL_CLASS } from './fieldStyles'
 
-export default function Input({ label, id, className = '', ...props }) {
+export default function Textarea({ label, id, className = '', ...props }) {
   return (
     <div className={className}>
       <label htmlFor={id} className={LABEL_CLASS}>
         {label}
       </label>
-      <input id={id} className={FIELD_CLASS} {...props} />
+      <textarea id={id} rows={4} className={`${FIELD_CLASS} resize-y`} {...props} />
     </div>
   )
 }

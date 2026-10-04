@@ -1,7 +1,7 @@
 import { formatDate, needsFollowUp } from '../../utils/dates'
 import StatusBadge from './StatusBadge'
 
-export default function ApplicationCard({ application }) {
+export default function ApplicationCard({ application, onEdit }) {
   const { company, position, job_url, sent_at, status, notes } = application
   const toFollowUp = needsFollowUp(application)
 
@@ -28,17 +28,27 @@ export default function ApplicationCard({ application }) {
 
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-stone-100 pt-3 text-xs text-stone-500">
         <span>{sent_at ? `Envoyée le ${formatDate(sent_at)}` : 'Pas encore envoyée'}</span>
-        {job_url && (
-          // rel="noopener noreferrer" : la page ouverte ne peut pas accéder à notre onglet (sécurité).
-          <a
-            href={job_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-brand-600 hover:text-brand-700"
+        <div className="flex items-center gap-1">
+          {job_url && (
+            // rel="noopener noreferrer" : la page ouverte ne peut pas accéder à notre onglet (sécurité).
+            <a
+              href={job_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg px-2 py-1.5 font-semibold text-brand-600 hover:bg-brand-50"
+            >
+              Voir l’offre ↗
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={() => onEdit(application)}
+            className="rounded-lg px-2 py-1.5 font-semibold text-stone-600 hover:bg-stone-100"
+            aria-label={`Modifier la candidature ${company}`}
           >
-            Voir l’offre ↗
-          </a>
-        )}
+            Modifier
+          </button>
+        </div>
       </div>
     </article>
   )
