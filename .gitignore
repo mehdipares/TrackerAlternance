@@ -10,3 +10,6 @@ dist
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# Notes personnelles de préparation (pas destinées au dépôt public)
+prepa-entretien/
