@@ -19,3 +19,21 @@
 body {
   @apply bg-canvas text-stone-800 font-sans antialiased;
 }
+
+/* Accessibilité : contour bien visible pour la navigation au clavier (Tab),
+   sans l'afficher lors d'un clic à la souris (:focus-visible). */
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+/* Respecte le réglage système « réduire les animations ». */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

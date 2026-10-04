@@ -34,6 +34,7 @@ export default function DashboardPage() {
 
   return (
     <section>
+      <title>Tableau de bord · Alternance Tracker</title>
       <div className="mb-8">
         <h1 className="text-2xl font-extrabold tracking-tight text-stone-900 sm:text-3xl">Tableau de bord</h1>
         {!loading && !error && applications.length > 0 && (

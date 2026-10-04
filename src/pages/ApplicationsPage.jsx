@@ -59,6 +59,7 @@ export default function ApplicationsPage() {
 
   return (
     <section>
+      <title>Mes candidatures · Alternance Tracker</title>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-stone-900 sm:text-3xl">Mes candidatures</h1>

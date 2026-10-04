@@ -1,6 +1,8 @@
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import Logo from '../ui/Logo'
+import Spinner from '../ui/Spinner'
 import NavItems from './NavItems'
 
 export default function AppLayout() {
@@ -36,7 +38,16 @@ export default function AppLayout() {
 
       {/* pb-24 sur mobile : laisse de la place à la barre de navigation du bas */}
       <main className="mx-auto max-w-5xl px-4 pt-6 pb-24 sm:py-10">
-        <Outlet />
+        {/* Pendant le chargement d'une page, l'en-tête et la navigation restent visibles */}
+        <Suspense
+          fallback={
+            <div className="grid place-items-center py-20 text-brand-600">
+              <Spinner className="size-8" />
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
 
       <nav

@@ -65,6 +65,7 @@ export default function ApplicationForm({ application, onSubmit, onDelete, onCan
           label="Entreprise *"
           id="company"
           name="company"
+          autoFocus={!application} // en ajout, le curseur est placé directement dans ce champ
           required
           maxLength={100}
           value={values.company}

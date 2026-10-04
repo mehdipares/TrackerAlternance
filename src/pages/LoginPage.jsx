@@ -30,6 +30,7 @@ export default function LoginPage() {
   return (
     <AuthLayout
       title="Bon retour 👋"
+      documentTitle="Connexion"
       subtitle="Connectez-vous pour suivre vos candidatures."
       footer={
         <>

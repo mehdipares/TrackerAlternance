@@ -1,8 +1,10 @@
 import Logo from '../ui/Logo'
 
-export default function AuthLayout({ title, subtitle, children, footer }) {
+// documentTitle : texte de l'onglet du navigateur (par défaut, le titre de la page).
+export default function AuthLayout({ title, documentTitle = title, subtitle, children, footer }) {
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-2">
+      <title>{`${documentTitle} · Alternance Tracker`}</title>
       {/* Panneau de présentation : uniquement sur grand écran */}
       <aside className="relative hidden overflow-hidden bg-brand-700 p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -right-24 -top-24 size-96 rounded-full bg-brand-600" aria-hidden="true" />
