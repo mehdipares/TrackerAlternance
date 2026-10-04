@@ -6,7 +6,7 @@ export default function Logo({ light = false }) {
           <path d="M5 13l4 4L19 7" />
         </svg>
       </span>
-      <span className={`text-lg font-extrabold tracking-tight ${light ? 'text-white' : 'text-stone-900'}`}>
+      <span className={`text-base font-extrabold sm:text-lg tracking-tight ${light ? 'text-white' : 'text-stone-900'}`}>
         Alternance<span className={light ? 'text-brand-200' : 'text-brand-600'}>Tracker</span>
       </span>
     </span>

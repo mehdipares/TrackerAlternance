@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { countByStatus, filterApplications, normalize } from './filters'
+import { countByStatus, filterApplications, getApplicationsToFollowUp, normalize } from './filters'
 
 const applications = [
   { id: 1, company: 'Société Générale', status: 'sent' },
@@ -53,5 +53,29 @@ describe('countByStatus', () => {
 
   it('fonctionne avec une liste vide', () => {
     expect(countByStatus([]).sent).toBe(0)
+  })
+})
+
+describe('getApplicationsToFollowUp', () => {
+  const today = new Date(2026, 9, 10) // 10 octobre 2026
+
+  it('ne garde que les candidatures à relancer, la plus ancienne en premier', () => {
+    const list = [
+      { id: 'recent', status: 'sent', sent_at: '2026-10-08' }, // 2 jours : pas encore
+      { id: 'b', status: 'sent', sent_at: '2026-10-01' }, // 9 jours
+      { id: 'a', status: 'sent', sent_at: '2026-09-20' }, // 20 jours : la plus urgente
+      { id: 'entretien', status: 'interview', sent_at: '2026-09-01' }, // déjà une réponse
+    ]
+    const result = getApplicationsToFollowUp(list, today)
+    expect(result.map((application) => application.id)).toEqual(['a', 'b'])
+  })
+
+  it('ne modifie pas l’ordre du tableau d’origine', () => {
+    const list = [
+      { id: 'b', status: 'sent', sent_at: '2026-10-01' },
+      { id: 'a', status: 'sent', sent_at: '2026-09-20' },
+    ]
+    getApplicationsToFollowUp(list, today)
+    expect(list.map((application) => application.id)).toEqual(['b', 'a'])
   })
 })

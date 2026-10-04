@@ -26,7 +26,7 @@ export default function ApplicationCard({ application, onEdit }) {
 
       {notes && <p className="line-clamp-2 text-sm text-stone-600">{notes}</p>}
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-stone-100 pt-3 text-xs text-stone-500">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-stone-100 pt-3 text-xs text-stone-500">
         <span>{sent_at ? `Envoyée le ${formatDate(sent_at)}` : 'Pas encore envoyée'}</span>
         <div className="flex items-center gap-1">
           {job_url && (

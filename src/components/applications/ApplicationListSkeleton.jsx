@@ -2,7 +2,7 @@
 // ce qui évite que la page « saute » quand les données arrivent.
 export default function ApplicationListSkeleton({ count = 4 }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4" aria-busy="true" aria-label="Chargement des candidatures">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4" aria-busy="true" aria-label="Chargement des candidatures">
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="animate-pulse rounded-2xl bg-white p-5 ring-1 ring-stone-200/70">
           <div className="flex justify-between gap-3">

@@ -1,3 +1,4 @@
+import { needsFollowUp } from './dates'
 import { STATUSES } from './status'
 
 // Met en minuscules et retire les accents : "Société" et "societe" doivent correspondre.
@@ -18,6 +19,14 @@ export function filterApplications(applications, { status = 'all', search = '' }
     const matchesSearch = query === '' || normalize(application.company).includes(query)
     return matchesStatus && matchesSearch
   })
+}
+
+// Candidatures à relancer, de la plus ancienne à la plus récente (la plus urgente en premier).
+// Les dates "YYYY-MM-DD" se comparent correctement comme des chaînes de caractères.
+export function getApplicationsToFollowUp(applications, today = new Date()) {
+  return applications
+    .filter((application) => needsFollowUp(application, today))
+    .sort((a, b) => a.sent_at.localeCompare(b.sent_at))
 }
 
 // Renvoie { to_send: 2, sent: 5, ... } avec tous les statuts, même à 0.
