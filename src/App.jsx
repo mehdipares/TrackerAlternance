@@ -1,15 +1,31 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import AppLayout from './components/layout/AppLayout'
+import ProtectedRoute from './components/layout/ProtectedRoute'
+import PublicOnlyRoute from './components/layout/PublicOnlyRoute'
+import { AuthProvider } from './context/AuthContext'
+import DashboardPage from './pages/DashboardPage'
+import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
+
 export default function App() {
   return (
-    <main className="min-h-dvh grid place-items-center p-4">
-      <div className="text-center">
-        <span className="inline-block rounded-full bg-brand-100 px-3 py-1 text-sm font-semibold text-brand-700">
-          Étape 1
-        </span>
-        <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-stone-900">
-          Alternance Tracker
-        </h1>
-        <p className="mt-2 text-stone-500">Le projet est prêt.</p>
-      </div>
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route element={<PublicOnlyRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route index element={<DashboardPage />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
