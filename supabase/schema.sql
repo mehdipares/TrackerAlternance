@@ -40,9 +40,14 @@ before update on public.applications
 for each row execute function public.set_updated_at();
 
 -- =============================================================
--- Row Level Security : chaque utilisateur ne voit et ne modifie
--- que ses propres lignes. Sans policy, tout est refusé par défaut.
+-- Sécurité en deux niveaux :
+-- 1. GRANT (niveau table) : seuls les utilisateurs connectés
+--    ont accès à la table. Les visiteurs anonymes (anon), aucun.
+-- 2. RLS (niveau ligne) : chaque utilisateur ne voit et ne modifie
+--    que ses propres lignes. Sans policy, tout est refusé par défaut.
 -- =============================================================
+grant select, insert, update, delete on public.applications to authenticated;
+
 alter table public.applications enable row level security;
 
 create policy "Lecture de ses candidatures"
