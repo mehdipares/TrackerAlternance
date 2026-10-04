@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { isDemoUser } from '../../lib/demo'
 import Logo from '../ui/Logo'
 import Spinner from '../ui/Spinner'
 import NavItems from './NavItems'
@@ -10,6 +11,11 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-dvh">
+      {isDemoUser(user) && (
+        <p className="bg-brand-700 px-4 py-2 text-center text-xs font-medium text-white">
+          Compte de démo : données fictives, réinitialisées chaque nuit. Testez librement !
+        </p>
+      )}
       <header className="sticky top-0 z-10 border-b border-stone-200/70 bg-canvas/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
           <div className="flex items-center gap-6">
