@@ -5,6 +5,7 @@ import {
   fetchApplications,
   updateApplication,
 } from '../api/applications'
+import { buildStatusUpdate } from '../utils/status'
 
 // Gère l'état des candidatures : la liste, le chargement et l'erreur, ainsi que les actions.
 // Les pages n'ont plus qu'à afficher ce que le hook leur donne.
@@ -47,6 +48,24 @@ export function useApplications() {
     )
   }
 
+  // Mise à jour OPTIMISTE (utilisée par le glisser-déposer du kanban) :
+  // 1. on change le statut à l'écran tout de suite, sans attendre la base ;
+  // 2. on enregistre ;
+  // 3. en cas d'échec, on remet la candidature telle qu'elle était, et on relance l'erreur.
+  async function moveApplication(application, status) {
+    const changes = buildStatusUpdate(application, status)
+    const replace = (newVersion) =>
+      setApplications((current) => current.map((item) => (item.id === application.id ? newVersion : item)))
+
+    replace({ ...application, ...changes })
+    try {
+      replace(await updateApplication(application.id, changes))
+    } catch (error) {
+      replace(application)
+      throw error
+    }
+  }
+
   async function removeApplication(id) {
     await deleteApplication(id)
     setApplications((current) => current.filter((application) => application.id !== id))
@@ -59,6 +78,7 @@ export function useApplications() {
     reload: load,
     addApplication,
     editApplication,
+    moveApplication,
     removeApplication,
   }
 }

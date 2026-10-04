@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { toApplicationPayload, toFormValues } from '../../utils/applicationForm'
-import { todayIsoDate } from '../../utils/dates'
-import { STATUSES } from '../../utils/status'
+import { STATUSES, buildStatusUpdate } from '../../utils/status'
 import Alert from '../ui/Alert'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
@@ -22,12 +21,9 @@ export default function ApplicationForm({ application, onSubmit, onDelete, onCan
   function handleChange(event) {
     const { name, value } = event.target
     setValues((current) => {
-      const next = { ...current, [name]: value }
-      // Passage à « Envoyée » sans date : on propose la date du jour.
-      if (name === 'status' && value === 'sent' && !current.sent_at) {
-        next.sent_at = todayIsoDate()
-      }
-      return next
+      // Changement de statut : même règle que le kanban (date du jour si « Envoyée » sans date).
+      if (name === 'status') return { ...current, ...buildStatusUpdate(current, value) }
+      return { ...current, [name]: value }
     })
   }
 
@@ -120,42 +116,42 @@ export default function ApplicationForm({ application, onSubmit, onDelete, onCan
         onChange={handleChange}
       />
 
-      {confirmingDelete ? (
-        <div className="rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200" role="alert">
-          <p className="text-sm font-semibold text-rose-800">
-            Supprimer définitivement la candidature chez {application.company} ?
-          </p>
-          <p className="mt-0.5 text-sm text-rose-700">Cette action est irréversible.</p>
-          <div className="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button type="button" variant="secondary" onClick={() => setConfirmingDelete(false)}>
-              Non, garder
+      {/* Sur mobile, les actions restent collées en bas de la fenêtre (sticky) :
+          pas besoin de faire défiler tout le formulaire pour enregistrer.
+          env(safe-area-inset-bottom) : marge pour la barre d'accueil des iPhone. */}
+      <div className="sticky bottom-0 -mx-5 border-t border-stone-100 bg-white px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:border-0 sm:p-0 sm:pt-2">
+        {confirmingDelete ? (
+          <div className="rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200" role="alert">
+            <p className="text-sm font-semibold text-rose-800">
+              Supprimer définitivement la candidature chez {application.company} ?
+            </p>
+            <p className="mt-0.5 text-sm text-rose-700">Cette action est irréversible.</p>
+            <div className="mt-3 flex gap-2 sm:justify-end">
+              <Button type="button" variant="secondary" className="flex-1 sm:flex-none" onClick={() => setConfirmingDelete(false)}>
+                Non, garder
+              </Button>
+              <Button type="button" variant="danger" loading={deleting} className="flex-1 sm:flex-none" onClick={handleDelete}>
+                Oui, supprimer
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            {/* Le bouton Supprimer n'existe qu'en modification */}
+            {application && (
+              <Button type="button" variant="danger-ghost" className="mr-auto" onClick={() => setConfirmingDelete(true)}>
+                Supprimer
+              </Button>
+            )}
+            <Button type="button" variant="secondary" className="sm:ml-auto" onClick={onCancel}>
+              Annuler
             </Button>
-            <Button type="button" variant="danger" loading={deleting} onClick={handleDelete}>
-              Oui, supprimer
+            <Button type="submit" loading={saving} className="flex-1 sm:flex-none">
+              {application ? 'Enregistrer' : 'Ajouter'}
             </Button>
           </div>
-        </div>
-      ) : (
-        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:items-center">
-          {/* Le bouton Supprimer n'existe qu'en modification */}
-          {application && (
-            <Button
-              type="button"
-              variant="danger-ghost"
-              className="sm:mr-auto"
-              onClick={() => setConfirmingDelete(true)}
-            >
-              Supprimer
-            </Button>
-          )}
-          <Button type="button" variant="secondary" className="sm:ml-auto" onClick={onCancel}>
-            Annuler
-          </Button>
-          <Button type="submit" loading={saving}>
-            {application ? 'Enregistrer' : 'Ajouter la candidature'}
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
     </form>
   )
 }

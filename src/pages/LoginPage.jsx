@@ -41,7 +41,7 @@ export default function LoginPage() {
       footer={
         <>
           Pas encore de compte ?{' '}
-          <Link to="/signup" className="font-semibold text-brand-600 hover:text-brand-700">
+          <Link to="/signup" className="inline-block py-2 font-semibold text-brand-600 hover:text-brand-700">
             Créer un compte
           </Link>
         </>

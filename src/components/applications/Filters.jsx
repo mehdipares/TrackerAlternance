@@ -45,7 +45,7 @@ export default function Filters({ status, search, counts, total, onStatusChange,
               type="button"
               aria-pressed={active}
               onClick={() => onStatusChange(option.value)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
+              className={`shrink-0 rounded-full px-4 py-2.5 text-sm sm:px-3.5 sm:py-1.5 font-semibold transition ${
                 active
                   ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/20'
                   : 'bg-white text-stone-600 ring-1 ring-stone-200 hover:bg-stone-50'

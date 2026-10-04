@@ -39,7 +39,7 @@ export default function SignupPage() {
       footer={
         <>
           Déjà inscrit ?{' '}
-          <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700">
+          <Link to="/login" className="inline-block py-2 font-semibold text-brand-600 hover:text-brand-700">
             Se connecter
           </Link>
         </>

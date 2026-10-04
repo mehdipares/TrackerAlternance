@@ -33,11 +33,14 @@ Application web full-stack pour suivre ses candidatures d'alternance : statuts, 
 - **Relances** : les candidatures « envoyées » depuis 7 jours ou plus sont mises en évidence, et peuvent être marquées comme relancées en un clic depuis le tableau de bord
 - **Filtres par statut et recherche par entreprise**, insensible aux accents et aux majuscules, conservés dans l'URL
 - **Suppression avec confirmation**
+- **Vue kanban** : une colonne par statut, glisser-déposer d'une carte pour changer son statut (souris, poignée au doigt, clavier). Sur téléphone, les colonnes s'empilent verticalement pour tenir dans la largeur de l'écran.
 - **Responsive, mobile first** : barre de navigation en bas de l'écran sur mobile, formulaire en panneau coulissant
 - **États de chargement** (squelettes), **messages d'erreur** avec bouton « Réessayer », **états vides**
 - **Compte de démo** accessible en un clic, réinitialisé automatiquement chaque nuit
 
 ## Captures d'écran
+
+![Vue kanban](docs/screenshots/kanban.png)
 
 | Liste des candidatures | Modification |
 | --- | --- |
@@ -51,7 +54,7 @@ Application web full-stack pour suivre ses candidatures d'alternance : statuts, 
 
 | Domaine | Outils |
 | --- | --- |
-| Front-end | React 19, Vite, React Router |
+| Front-end | React 19, Vite, React Router, dnd-kit |
 | Style | Tailwind CSS v4 |
 | Base de données | PostgreSQL (Supabase) |
 | Authentification | Supabase Auth |
@@ -93,10 +96,15 @@ La date du jour est passée en paramètre (`needsFollowUp(application, today = n
 - **État dérivé** : la liste filtrée, les compteurs et les relances sont recalculés à partir de la liste des candidatures, jamais stockés en double.
 - **Filtres dans l'URL** (`/candidatures?statut=sent&q=doc`) avec `useSearchParams` : le bouton « Retour » fonctionne et le tableau de bord renvoie vers une liste déjà filtrée.
 - **Mises à jour sans rechargement complet** : après un enregistrement, la ligne renvoyée par la base remplace ou complète la liste locale.
+- **Mise à jour optimiste sur le kanban** : la carte change de colonne immédiatement, puis revient à sa place avec un message si l'enregistrement échoue.
+
+### Glisser-déposer
+
+Le kanban utilise [`@dnd-kit/core`](https://dndkit.com). À la souris, on saisit une carte n'importe où (le glissement démarre après 5 px de mouvement). Au doigt, on la saisit par sa poignée : celle-ci a `touch-action: none`, donc le navigateur ne fait jamais défiler la page depuis cette zone, alors que le reste de la carte permet de faire défiler normalement. Les annonces pour les lecteurs d'écran sont traduites en français. La règle « passer à Envoyée remplit la date du jour » est partagée entre le formulaire et le kanban (`buildStatusUpdate`, testée).
 
 ### Performance
 
-- **Chargement des pages à la demande** avec `React.lazy` et `Suspense`
+- **Chargement des pages à la demande** avec `React.lazy` et `Suspense` : la bibliothèque de glisser-déposer n'est téléchargée que sur la page kanban
 - **Bibliothèques dans des fichiers séparés** (React et Supabase) pour profiter du cache navigateur entre deux déploiements
 
 ### Accessibilité
@@ -133,12 +141,13 @@ Une table `applications`, liée aux utilisateurs gérés par Supabase (`auth.use
 │   ├── components/
 │   │   ├── applications/ # carte, liste, formulaire, filtres, badge de statut
 │   │   ├── dashboard/    # statistiques, liste des relances
+│   │   ├── kanban/       # tableau, colonnes et cartes déplaçables
 │   │   ├── layout/       # en-tête, navigation, routes protégées
 │   │   └── ui/           # boutons, champs, modale, alertes, squelettes
 │   ├── context/          # AuthContext
 │   ├── hooks/            # useAuth, useApplications
 │   ├── lib/              # client Supabase, configuration du compte de démo
-│   ├── pages/            # connexion, inscription, tableau de bord, candidatures, 404
+│   ├── pages/            # connexion, inscription, tableau de bord, candidatures, kanban, 404
 │   └── utils/            # fonctions pures et leurs tests
 ├── vercel.json           # réécriture des routes vers index.html
 └── .env.example
@@ -194,7 +203,7 @@ Le fichier [`vercel.json`](vercel.json) renvoie `index.html` pour toutes les rou
 
 ## Pistes d'amélioration
 
-- Vue kanban avec glisser-déposer entre les statuts
+- Ordre des cartes personnalisable dans une colonne du kanban
 - Cache des données partagé entre les pages (TanStack Query)
 - Passage à TypeScript
 - Tests de composants (React Testing Library) et tests de bout en bout

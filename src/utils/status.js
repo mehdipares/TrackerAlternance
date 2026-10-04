@@ -1,3 +1,5 @@
+import { todayIsoDate } from './dates'
+
 // Source unique des statuts : l'ordre du tableau sert partout
 // (liste déroulante, tableau de bord, colonnes du kanban).
 // `value` correspond à la valeur stockée en base (voir le check dans supabase/schema.sql).
@@ -15,4 +17,14 @@ export const DEFAULT_STATUS = 'to_send'
 
 export function getStatus(value) {
   return STATUSES.find((status) => status.value === value) ?? null
+}
+
+// Changements à enregistrer quand une candidature passe à un nouveau statut.
+// Règle : passer à « Envoyée » sans date d'envoi remplit la date du jour.
+// Utilisée par le formulaire et par le glisser-déposer du kanban : une seule règle, à un seul endroit.
+export function buildStatusUpdate(application, status, today = new Date()) {
+  if (status === 'sent' && !application.sent_at) {
+    return { status, sent_at: todayIsoDate(today) }
+  }
+  return { status }
 }

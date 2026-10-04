@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'))
 const SignupPage = lazy(() => import('./pages/SignupPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const ApplicationsPage = lazy(() => import('./pages/ApplicationsPage'))
+const KanbanPage = lazy(() => import('./pages/KanbanPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
               <Route element={<AppLayout />}>
                 <Route index element={<DashboardPage />} />
                 <Route path="candidatures" element={<ApplicationsPage />} />
+                <Route path="kanban" element={<KanbanPage />} />
               </Route>
             </Route>
 

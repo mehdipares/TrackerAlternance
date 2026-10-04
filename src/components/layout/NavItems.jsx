@@ -11,6 +11,11 @@ const LINKS = [
     label: 'Candidatures',
     icon: 'M4 6h16M4 12h16M4 18h10',
   },
+  {
+    to: '/kanban',
+    label: 'Kanban',
+    icon: 'M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z',
+  },
 ]
 
 // variant "top" : liens horizontaux dans l'en-tête (écran large).
